@@ -3,10 +3,11 @@ name: Build And Deploy
 # when a pull request is merged into main, run this workflow
 on:
   pull_request:
-    branches:
-      - main
     types:
       - closed
+    branches:
+      - main
+
 
 
 jobs:
