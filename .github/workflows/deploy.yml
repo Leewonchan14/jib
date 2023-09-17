@@ -40,6 +40,11 @@ jobs:
           source .bashrc
 
           ./gradlew jib -Djib.to.image=twoone14/jib:${{ github.event.pull_request.number }}
+          ./gradlew jib -Djib.to.image=twoone14/jib:lastest
+          
+#          docker tag twoone14/jib:${{ github.event.pull_request.number }} twoone14/jib:latest
+#
+#          docker push twoone14/jib:latest
 
       - name: Deploy
         run: |
