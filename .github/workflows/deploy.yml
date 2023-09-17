@@ -1,11 +1,11 @@
 name: Build And Deploy
 
+# when a pull request is merged into main, run this workflow
 on:
   pull_request:
-    types:
-      - closed
     branches:
       - main
+
 
 jobs:
   build:
@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Create secrets
         run: |
           echo "${{ secrets.SECRET }}" > src/main/resources/secrets.properties
 
