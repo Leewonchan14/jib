@@ -15,34 +15,37 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: echo
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create secrets
         run: |
-          echo "hello world"
-#      - name: Checkout code
-#        uses: actions/checkout@v3
+          echo "${{ secrets.SECRET }}" > src/main/resources/secrets.properties
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Docker login
+        run: |
+          source .bashrc
+
+          docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+
+      - name: Build with Jib
+        run: |
+          source .bashrc
+
+          ./gradlew jib -Djib.to.image=twoone14/jib:${{ github.event.pull_request.number }}
+          ./gradlew jib -Djib.to.image=twoone14/jib:lastest
+          
+#          docker tag twoone14/jib:${{ github.event.pull_request.number }} twoone14/jib:latest
 #
-#      - name: Create secrets
-#        run: |
-#          echo "${{ secrets.SECRET }}" > src/main/resources/secrets.properties
-#
-#      - name: Set up JDK 17
-#        uses: actions/setup-java@v3
-#        with:
-#          java-version: '17'
-#          distribution: 'temurin'
-#
-#      - name: Docker login
-#        run: |
-#          source .bashrc
-#
-#          docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
-#
-#      - name: Build with Jib
-#        run: |
-#          source .bashrc
-#
-#          ./gradlew jib -Djib.to.image=twoone14/jib:${{ github.event.pull_request.number }}
-#
-#      - name: Deploy
-#        run: |
-#          echo "Deploying..."
+#          docker push twoone14/jib:latest
+
+      - name: Deploy
+        run: |
+          echo "Deploying..."
